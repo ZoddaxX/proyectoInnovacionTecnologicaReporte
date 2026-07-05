@@ -1,0 +1,53 @@
+# Credenciales de uso local para demo academica.
+# No usar estas contrasenas en un entorno real o expuesto a internet.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: returniq_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: returniq_pg_2024
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./backend/database/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d returniq_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    ports:
+      - "3002:3002"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: returniq_dev
+      DB_USER: postgres
+      DB_PASSWORD: returniq_pg_2024
+      JWT_SECRET: returniq_jwt_docker_2024
+      PORT: 3002
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+      - ia
+
+  ia:
+    build: ./ia
+    ports:
+      - "5001:5001"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PORT: 5001
+
+volumes:
+  postgres_data:

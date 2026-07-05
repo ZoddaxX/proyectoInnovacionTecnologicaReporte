@@ -1,0 +1,22 @@
+{
+  "name": "returniq-ia",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.1.49",
+    "@langchain/openai": "^1.4.7",
+    "express": "^4.19.2",
+    "langchain": "^1.4.5",
+    "zod": "^3.23.8"
+  },
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}
